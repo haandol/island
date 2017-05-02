@@ -18,6 +18,7 @@ const RPC_EXEC_TIMEOUT_MS = parseInt(process.env.ISLAND_RPC_EXEC_TIMEOUT_MS, 10)
 const RPC_WAIT_TIMEOUT_MS = parseInt(process.env.ISLAND_RPC_WAIT_TIMEOUT_MS, 10) || 60000;
 const SERVICE_LOAD_TIME_MS = parseInt(process.env.ISLAND_SERVICE_LOAD_TIME_MS, 10) || 60000;
 const RPC_QUEUE_EXPIRES_MS = RPC_WAIT_TIMEOUT_MS + SERVICE_LOAD_TIME_MS;
+const NO_REVIVER = process.env.RPC_NO_REVIVER === 'true';
 
 export interface IConsumerInfo {
   channel: amqp.Channel;
@@ -79,7 +80,8 @@ class RpcResponse {
   static decode(msg: Buffer): IRpcResponse {
     if (!msg) return { version: 0, result: false };
     try {
-      const res: IRpcResponse = JSON.parse(msg.toString('utf8'), RpcResponse.reviver);
+      const reviver = !NO_REVIVER && RpcResponse.reviver || undefined;
+      const res = JSON.parse(msg.toString('utf8'), reviver);
       if (!res.result) res.body = this.getAbstractError(res.body);
 
       return res;

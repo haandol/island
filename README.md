@@ -145,6 +145,7 @@ $ RABBITMQ_HOST=localhost npm test
 | `ISLAND_LOGGER_LEVEL`        | Logger level of category `island`                                 |
 | `ISLAND_TRACEMQ_HOST`        | MQ(formatted by amqp URI) for TraceLog. If omitted it doesn't log |
 | `ISLAND_TRACEMQ_QUEUE`       | A queue name to log TraceLog                                      |
+| `RPC_NO_REVIVER`             | When `true`, RpcResponse not use JSON.parse reviver               |
 
 
 
