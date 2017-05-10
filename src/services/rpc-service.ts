@@ -92,16 +92,17 @@ class RpcResponse {
   static getAbstractError(err: AbstractError): AbstractError {
     let result: AbstractError;
     const enumObj = {};
+    const errorIsland = err.extra && err.extra.island || err.occurredIn;
     enumObj[err.errorNumber] = err.errorKey;
     switch (err.errorType) {
       case 'LOGIC':
-        result = new AbstractLogicError(err.errorNumber, err.debugMsg, err.occurredIn, enumObj);
+        result = new AbstractLogicError(err.errorNumber, err.debugMsg, errorIsland, enumObj);
         break;
       case 'FATAL':
-        result = new AbstractFatalError(err.errorNumber, err.debugMsg, err.occurredIn, enumObj);
+        result = new AbstractFatalError(err.errorNumber, err.debugMsg, errorIsland, enumObj);
         break;
       default:
-        result = new AbstractError('ETC', 1, err.message, err.occurredIn, { 1: 'F0001' });
+        result = new AbstractError('ETC', 1, err.message, errorIsland, { 1: 'F0001' });
         result.name = 'ETCError';
     }
 
