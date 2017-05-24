@@ -438,6 +438,8 @@ export default class RPCService {
       this.reqExecutors[corrId] = ns.bind((msg: Message) => {
         clearTimeout(this.reqTimeouts[corrId]);
         delete this.reqTimeouts[corrId];
+        
+        if (!msg) return reject(new FatalError(ISLAND.FATAL.F0026_MISSING_REPLYTO_IN_RPC, 'Response message is emtpy.'));
 
         const res = RpcResponse.decode(msg.content);
         if (!res.result) return reject(res.body);
